@@ -1,0 +1,29 @@
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import api from '../lib/api'
+import { clearCart } from '../features/cart/cartSlice'
+
+export default function Checkout(){
+  const items = useSelector(s=>s.cart.items)
+  const dispatch = useDispatch()
+  const total = items.reduce((a,b)=>a+b.unitPrice*b.quantity,0)
+
+  const handleCheckout = async ()=>{
+    try{
+      const payload = { items, shippingAddress: { line1:'Test', city:'City' } }
+      const res = await api.post('/orders/checkout', payload)
+      alert('Checkout created on server. Complete payment flow next.')
+      dispatch(clearCart())
+    }catch(err){ console.error(err); alert('Checkout failed') }
+  }
+
+  return (
+    <main className="max-w-3xl mx-auto px-4 py-8">
+      <h2 className="text-2xl mb-4">Checkout</h2>
+      <div className="bg-white p-4 rounded">
+        <div>Total: ₹{total}</div>
+        <button onClick={handleCheckout} className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded">Place order</button>
+      </div>
+    </main>
+  )
+}
