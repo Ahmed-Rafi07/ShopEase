@@ -1,60 +1,140 @@
 // src/App.jsx
-import React from "react";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import React, { Suspense } from "react";
+import { Routes, Route } from "react-router-dom";
 
-// Components
-import Header from "./components/Header";
-import ScrollToTop from "./components/ScrollToTop";
+import MainLayout from "./layouts/MainLayout";
+import AuthLayout from "./layouts/AuthLayout";
+import RequireAuth from "./components/RequireAuth";
+import RequireGuest from "./components/RequireGuest";
+import RequireAdmin from "./components/RequireAdmin";
+import PageLoader from "./components/PageLoader";
 
 // Pages
 import Home from "./pages/Home";
+import Login from "./pages/Login";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 import CartPage from "./pages/CartPage";
-import Checkout from "./pages/Checkout";
+import WishlistPage from "./pages/WishlistPage";
+
+import AddressPage from "./pages/AddressPage";
+import PaymentPage from "./pages/PaymentPage";
+import OrderSuccess from "./pages/OrderSuccess";
+
+import ProfilePage from "./pages/ProfilePage";
+import EditProfile from "./pages/EditProfile";
+import ManageAddress from "./pages/ManageAddress";
+import OrderHistory from "./pages/OrderHistory";
+import OrderDetailPage from "./pages/OrderDetailPage";
+
 import AdminDashboard from "./pages/AdminDashboard";
-import Login from "./pages/Login";
-import WishlistPage from "./pages/WishlistPage";   // ⭐ NEW — Wishlist Added
 
 export default function App() {
-  const location = useLocation();
-
-  // Hide header only on login page
-  const hideHeader = location.pathname === "/login";
-
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-      {/* Header (hidden on login) */}
-      {!hideHeader && <Header />}
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
 
-      <main className="flex-grow">
-        <ScrollToTop />
-
-        <Routes>
-          {/* ⭐ HOME */}
+        {/* ⭐ PUBLIC ROUTES (with MainLayout) */}
+        <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
-
-          {/* ⭐ PUBLIC ROUTES */}
-          <Route path="/login" element={<Login />} />
-
-          {/* ⭐ PRODUCTS */}
           <Route path="/products" element={<Products />} />
           <Route path="/product/:id" element={<ProductDetail />} />
-
-          {/* ⭐ CART + CHECKOUT */}
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/checkout" element={<Checkout />} />
-
-          {/* ⭐ WISHLIST PAGE (NEW) */}
           <Route path="/wishlist" element={<WishlistPage />} />
+          <Route path="/cart" element={<CartPage />} />
+        </Route>
 
-          {/* ⭐ ADMIN */}
-          <Route path="/admin/*" element={<AdminDashboard />} />
+        {/* ⭐ AUTH ROUTES (no header) */}
+        <Route element={<RequireGuest><AuthLayout /></RequireGuest>}>
+          <Route path="/login" element={<Login />} />
+        </Route>
 
-          {/* ⭐ UNKNOWN ROUTES → redirect to home */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </main>
-    </div>
+        {/* ⭐ PROTECTED USER ROUTES */}
+        <Route element={<MainLayout />}>
+          <Route
+            path="/checkout/address"
+            element={
+              <RequireAuth>
+                <AddressPage />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/checkout/payment"
+            element={
+              <RequireAuth>
+                <PaymentPage />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/checkout/success"
+            element={
+              <RequireAuth>
+                <OrderSuccess />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/profile"
+            element={
+              <RequireAuth>
+                <ProfilePage />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/profile/edit"
+            element={
+              <RequireAuth>
+                <EditProfile />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/profile/addresses"
+            element={
+              <RequireAuth>
+                <ManageAddress />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/orders"
+            element={
+              <RequireAuth>
+                <OrderHistory />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/orders/:id"
+            element={
+              <RequireAuth>
+                <OrderDetailPage />
+              </RequireAuth>
+            }
+          />
+        </Route>
+
+        {/* ⭐ ADMIN ROUTES */}
+        <Route
+          path="/admin/*"
+          element={
+            <RequireAdmin>
+              <MainLayout>
+                <AdminDashboard />
+              </MainLayout>
+            </RequireAdmin>
+          }
+        />
+      </Routes>
+    </Suspense>
   );
 }

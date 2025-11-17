@@ -5,14 +5,19 @@ import { Provider } from "react-redux";
 import App from "./App";
 import store from "./src_app/store.js";
 import "./styles/index.css";
-import { setCredentials } from "./features/auth/authSlice"; // ✅ Keeps user logged in
+import { setAuth } from "./features/auth/authSlice"; // FIXED
 
-// ✅ Restore token on refresh
-const savedToken = localStorage.getItem("token");
-if (savedToken) {
-  // Optional: load user if stored
-  const savedUser = JSON.parse(localStorage.getItem("user") || "null");
-  store.dispatch(setCredentials({ user: savedUser, token: savedToken }));
+// ✅ Restore auth on refresh
+const saved = localStorage.getItem("AUTH_STATE");
+if (saved) {
+  try {
+    const parsed = JSON.parse(saved);
+    if (parsed.token) {
+      store.dispatch(setAuth({ token: parsed.token, user: parsed.user }));
+    }
+  } catch (err) {
+    console.error("Error restoring auth:", err);
+  }
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(
