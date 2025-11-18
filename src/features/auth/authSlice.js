@@ -28,6 +28,29 @@ const initialState = {
 };
 
 /* -----------------------------------------
+   SIGN UP (REGISTER)
+----------------------------------------- */
+export const registerUser = createAsyncThunk(
+  "auth/registerUser",
+  async ({ name, email, password }, thunkAPI) => {
+    try {
+      const res = await axios.post("/auth/register", {
+        name,
+        email,
+        password,
+      });
+
+      // backend returns only message → success
+      return res.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Registration failed"
+      );
+    }
+  }
+);
+
+/* -----------------------------------------
    LOGIN
 ----------------------------------------- */
 export const loginUser = createAsyncThunk(
@@ -56,7 +79,7 @@ export const logoutUser = createAsyncThunk(
 );
 
 /* -----------------------------------------
-   OPTIONAL: AUTO REFRESH TOKEN (if backend supports)
+   AUTO REFRESH
 ----------------------------------------- */
 export const refreshToken = createAsyncThunk(
   "auth/refreshToken",
@@ -78,14 +101,12 @@ const authSlice = createSlice({
   initialState,
 
   reducers: {
-    /* Manual logout from UI */
     logout(state) {
       state.token = null;
       state.user = null;
       localStorage.removeItem("AUTH_STATE");
     },
 
-    /* Set credentials manually (for restoring auth) */
     setAuth(state, action) {
       state.token = action.payload.token;
       state.user = action.payload.user;
@@ -101,6 +122,23 @@ const authSlice = createSlice({
   },
 
   extraReducers: (builder) => {
+    /* --------------------------
+       REGISTER
+    --------------------------- */
+    builder
+      .addCase(registerUser.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state) => {
+        state.status = "succeeded";
+        // no auto login → user redirected to login page
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      });
+
     /* --------------------------
        LOGIN
     --------------------------- */
@@ -146,17 +184,15 @@ const authSlice = createSlice({
         state.token = action.payload.token;
         state.user = action.payload.user;
 
-        // update in localStorage
         localStorage.setItem(
           "AUTH_STATE",
           JSON.stringify({
-            token: action.payload.token,
-            user: action.payload.user,
+            token: state.token,
+            user: state.user,
           })
         );
       })
       .addCase(refreshToken.rejected, (state) => {
-        // session expired → logout
         state.token = null;
         state.user = null;
         localStorage.removeItem("AUTH_STATE");

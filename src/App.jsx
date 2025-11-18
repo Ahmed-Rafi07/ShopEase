@@ -1,17 +1,19 @@
-// src/App.jsx
 import React, { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import MainLayout from "./layouts/MainLayout";
 import AuthLayout from "./layouts/AuthLayout";
+
 import RequireAuth from "./components/RequireAuth";
 import RequireGuest from "./components/RequireGuest";
 import RequireAdmin from "./components/RequireAdmin";
+
 import PageLoader from "./components/PageLoader";
 
 // Pages
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";             // ⭐ Added
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 import CartPage from "./pages/CartPage";
@@ -29,6 +31,7 @@ import OrderDetailPage from "./pages/OrderDetailPage";
 
 import AdminDashboard from "./pages/AdminDashboard";
 
+
 export default function App() {
   return (
     <Suspense fallback={<PageLoader />}>
@@ -43,9 +46,10 @@ export default function App() {
           <Route path="/cart" element={<CartPage />} />
         </Route>
 
-        {/* ⭐ AUTH ROUTES (no header) */}
+        {/* ⭐ AUTH ROUTES (NO HEADER, only for guests) */}
         <Route element={<RequireGuest><AuthLayout /></RequireGuest>}>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />     {/* ⭐ Signup route */}
         </Route>
 
         {/* ⭐ PROTECTED USER ROUTES */}
@@ -134,6 +138,7 @@ export default function App() {
             </RequireAdmin>
           }
         />
+
       </Routes>
     </Suspense>
   );

@@ -8,23 +8,49 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    /* ----------------------------------------
+       ADD ITEM TO CART
+       - If exists → increase quantity
+       - Else → add new item with quantity = 1
+    ---------------------------------------- */
     addItem: (state, action) => {
-      const existing = state.items.find((i) => i.id === action.payload.id);
+      const { id, quantity = 1 } = action.payload; // default qty = 1
+
+      const existing = state.items.find((i) => i.id === id);
+
       if (existing) {
-        existing.quantity += action.payload.quantity;
+        existing.quantity += quantity;
       } else {
-        state.items.push({ ...action.payload });
+        state.items.push({
+          ...action.payload,
+          quantity, // ensures quantity always exists
+        });
       }
     },
+
+    /* ----------------------------------------
+       REMOVE ITEM COMPLETELY
+    ---------------------------------------- */
     removeItem: (state, action) => {
       state.items = state.items.filter((i) => i.id !== action.payload);
     },
+
+    /* ----------------------------------------
+       UPDATE ITEM QUANTITY
+       - Block quantity < 1
+    ---------------------------------------- */
     updateItem: (state, action) => {
-      // ✅ Fix missing function
       const { id, quantity } = action.payload;
       const item = state.items.find((i) => i.id === id);
-      if (item) item.quantity = quantity;
+
+      if (item) {
+        item.quantity = Math.max(1, quantity); // never below 1
+      }
     },
+
+    /* ----------------------------------------
+       CLEAR CART COMPLETELY
+    ---------------------------------------- */
     clearCart: (state) => {
       state.items = [];
     },

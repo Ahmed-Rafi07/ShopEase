@@ -1,7 +1,22 @@
 // src/pages/ProductsData.js
 
 export const products = [
+  // ---------------------------------------------------------
   // 🏠 HOME ESSENTIALS
+  // ---------------------------------------------------------
+
+  {
+    id: 101,
+    title: "Dettol Handwash (Buy 1 Get 1)",
+    price: 99,
+    category: "home",
+    description:
+      "Original Dettol Liquid Handwash – Buy 1 Get 1 Free. Soft on hands, tough on germs.",
+    image: "https://m.media-amazon.com/images/I/51NOg+tTypL._SL1000_.jpg",
+    discount: 50,
+    trending: true,
+  },
+
   {
     id: 1,
     title: "Dettol Handwash (Buy 2 Get 1)",
@@ -16,8 +31,7 @@ export const products = [
     title: "Comfort Fabric Conditioner",
     price: 180,
     category: "home",
-    description:
-      "Keeps clothes soft and fresh with long-lasting fragrance.",
+    description: "Keeps clothes soft and fresh with long-lasting fragrance.",
     image:
       "https://www.bbassets.com/media/uploads/p/l/285250_18-comfort-after-wash-anti-bacterial-fabric-conditioner.jpg",
   },
@@ -54,7 +68,7 @@ export const products = [
     category: "home",
     description: "Removes tough stains and gives fresh fragrance.",
     image:
-      "https://ik.imagekit.io/wlfr/wellness/images/products/322369-2.png/tr:w-3840,c-at_max,cm-pad_resize,ar-1210-700,pr-true,f-auto,q-70,l-image,i-Wellness_logo_BDwqbQao9.png,lfo-bottom_right,w-200,h-90,c-at_least,cm-pad_resize,l-end",
+      "https://ik.imagekit.io/wlfr/wellness/images/products/322369-2.png",
   },
   {
     id: 14,
@@ -62,8 +76,7 @@ export const products = [
     price: 140,
     category: "home",
     description: "Removes dirt and provides bright whiteness.",
-    image:
-      "https://m.media-amazon.com/images/I/61LIzaFsZrL._AC_UF1000,1000_QL80_.jpg",
+    image: "https://m.media-amazon.com/images/I/61LIzaFsZrL._AC_UF1000,1000_QL80_.jpg",
   },
   {
     id: 15,
@@ -75,7 +88,22 @@ export const products = [
       "https://www.goodknight.in/wp-content/uploads/2019/11/gold_machine_refill_v2-1200x1200.png",
   },
 
+  // ---------------------------------------------------------
   // ⚡ ELECTRONICS
+  // ---------------------------------------------------------
+
+  {
+    id: 102,
+    title: "iPhone 15 Pro Max – Festive Offer",
+    price: 159999 - 20000,
+    category: "electronics",
+    description:
+      "Apple iPhone 15 Pro Max festive season discount – limited time only!",
+    image: "https://m.media-amazon.com/images/I/81fxjeu8fdL._SL1500_.jpg",
+    discount: 20,
+    trending: true,
+  },
+
   {
     id: 4,
     title: "Apple AirPods Pro 2",
@@ -91,8 +119,7 @@ export const products = [
     title: "ASUS ROG Gaming Laptop",
     price: 124999,
     category: "electronics",
-    description:
-      "RTX 4070, 16 GB RAM, 1 TB SSD, 240Hz display.",
+    description: "RTX 4070, 16 GB RAM, 1 TB SSD, 240Hz display.",
     image:
       "https://dlcdnwebimgs.asus.com/gain/10DEE269-0AA9-4DB8-A555-4696BC4F5767/w717/h525",
   },
@@ -102,18 +129,15 @@ export const products = [
     price: 29999,
     category: "electronics",
     description: "Industry-leading noise cancellation.",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvAgaAiDB_zwwASu9b1-6PxmKnjQyuG6E24A&s",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvAgaAiDB_zwwASu9b1-6PxmKnjQyuG6E24A&s",
   },
   {
     id: 7,
     title: "iPhone 15 Pro Max (256GB)",
     price: 159999,
     category: "electronics",
-    description:
-      "Titanium build, A17 Pro chip, 48MP camera.",
-    image:
-      "https://m.media-amazon.com/images/I/81fxjeu8fdL._SL1500_.jpg",
+    description: "Titanium build, A17 Pro chip, 48MP camera.",
+    image: "https://m.media-amazon.com/images/I/81fxjeu8fdL._SL1500_.jpg",
   },
   {
     id: 16,
@@ -123,6 +147,8 @@ export const products = [
     description: "200MP camera and Snapdragon 8 Gen 2.",
     image:
       "https://static0.pocketnowimages.com/wordpress/wp-content/uploads/2023/02/li-samsung-galaxy-s23-ultra-14.jpg",
+    discount: 10,
+    trending: true,
   },
   {
     id: 17,
@@ -130,8 +156,7 @@ export const products = [
     price: 89999,
     category: "electronics",
     description: "Rugged design with advanced fitness features.",
-    image:
-      "https://m.media-amazon.com/images/I/81V3wgQBeuL.jpg",
+    image: "https://m.media-amazon.com/images/I/81V3wgQBeuL.jpg",
   },
   {
     id: 18,
@@ -157,11 +182,13 @@ export const products = [
     price: 23999,
     category: "electronics",
     description: "Ultra HD LED display with vivid color.",
-    image:
-      "https://m.media-amazon.com/images/I/71S8U9VzLTL._SL1500_.jpg",
+    image: "https://m.media-amazon.com/images/I/71S8U9VzLTL._SL1500_.jpg",
   },
 
+  // ---------------------------------------------------------
   // 👕 FASHION
+  // ---------------------------------------------------------
+
   {
     id: 8,
     title: "Nike Air Max 270",
@@ -170,25 +197,30 @@ export const products = [
     description: "Stylish and comfortable sneakers.",
     image:
       "https://assets.myntassets.com/w_412,q_30,dpr_3,fl_progressive,f_webp/assets/images/10715844/2024/12/23/9f5a7475-62f7-458c-9091-57d36fa483621734933776742-Nike-Men-Black-Air-Max-270-Sneakers-3961734933776335-1.jpg",
+    discount: 30,
+    trending: true,
   },
+
   {
     id: 9,
     title: "Levi’s Denim Jacket",
     price: 3499,
     category: "fashion",
-    description: "Classic blue denim jacket.",
+    description: "Classic blue denim jacket for all seasons.",
     image:
       "https://cdn-images.farfetch-contents.com/18/79/44/66/18794466_40846245_1000.jpg",
+    discount: 20,
   },
+
   {
     id: 10,
     title: "Puma Sports T-Shirt",
     price: 999,
     category: "fashion",
     description: "Perfect for workouts and daily wear.",
-    image:
-      "https://thumblr.uniid.it/product/335904/dc5a092d51c4.jpg?width=3840&format=webp&q=75",
+    image: "https://thumblr.uniid.it/product/335904/dc5a092d51c4.jpg",
   },
+
   {
     id: 21,
     title: "Adidas UltraBoost 22",
@@ -196,8 +228,9 @@ export const products = [
     category: "fashion",
     description: "Premium running shoes with boost cushioning.",
     image:
-      "https://assets.adidas.com/images/w_383,h_383,f_auto,q_auto,fl_lossy,c_fill,g_auto/714c1241ccd04f31ba158f0b1e9416db_9366/ultraboost-5-shoes.jpg",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQx0BzCg78nMaxo59LleLSC4_fiChVfnzXefA&s",
   },
+
   {
     id: 22,
     title: "Roadster Casual Shirt",
@@ -207,6 +240,7 @@ export const products = [
     image:
       "https://english.cdn.zeenews.com/sites/default/files/49f8c1fa-a4aa-45a8-960f-c5ad8eae3fde1574328384416-Roadster-Men-Navy-Blue--Pink-Regular-Fit-Checked-Casual-Shir-1.jpg",
   },
+
   {
     id: 23,
     title: "HRX Training Joggers",
@@ -216,6 +250,7 @@ export const products = [
     image:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd0VacPSo_hNvI8eEJixogKVCZfA0YOAOtyg&s",
   },
+
   {
     id: 24,
     title: "Zara Oversized Hoodie",
@@ -223,8 +258,9 @@ export const products = [
     category: "fashion",
     description: "Cozy winter hoodie in premium fabric.",
     image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsiVsy8o6bvaxU3WbgKebS-VuWsoCwUIQ9JXt2AQnHP1nb9uny0AAlG3b9AhO2MVxoNKk&usqp=CAU",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsiVsy8o6bvaxU3WbgKebS-VuWsoCwUIQ9JXt2AQnHP1nb9uny0AAlG3b9AhO2MVxoNKk",
   },
+
   {
     id: 25,
     title: "U.S. Polo Assn. Sneakers",
@@ -234,6 +270,7 @@ export const products = [
     image:
       "https://uspoloassn.in/cdn/shop/files/1_d4888e76-b851-4326-af69-b60b22d2abe8.jpg",
   },
+
   {
     id: 26,
     title: "Wildcraft Backpack",
@@ -241,6 +278,6 @@ export const products = [
     category: "fashion",
     description: "Durable bag with laptop sleeve.",
     image:
-      "https://yournotebookprod.blob.core.windows.net/201301/product/wcdn/WILDCRAFT%20Causal%20Standard%20Backpack%20with%203%20compartments%20(Grey)-633026-1%20image-WILDCRAFT%20Causal%20Standard%20Backpack%20with%203%20compartments%20(Grey).jpg",
-  }
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTy6_H2pgrh1Bt4noBRlZj5vFpiAy4uc5JBJg&s",
+  },
 ];
