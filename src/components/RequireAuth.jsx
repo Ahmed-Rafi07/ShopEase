@@ -5,24 +5,34 @@ import { useSelector } from "react-redux";
 import { Navigate, useLocation } from "react-router-dom";
 
 /**
- * 🔐 RequireAuth (Premium Version)
+ * 🔐 RequireAuth (Enhanced Premium Version)
  *
- * - Protects routes by checking:
- *    ✔ Token exists
- *    ✔ User object exists
- *    ✔ Optional role-based access
+ * ✔ Protects routes based on:
+ *    - Authentication (token + user)
+ *    - Optional role-based access
  *
- * - Redirects to /login with the "from" location
- *   so user returns back after login.
+ * ✔ Handles:
+ *    - Loading state (prevents flicker)
+ *    - Expired session redirects
+ *    - Reserved route access with message
  *
- * - Provides smooth, professional fallback behavior.
+ * ✔ Sends user back to original page after login
  */
 
 export default function RequireAuth({ children, allowedRoles }) {
-  const { token, user } = useSelector((state) => state.auth);
+  const { token, user, loading } = useSelector((state) => state.auth);
   const location = useLocation();
 
-  // 1️⃣ No token → user not logged in
+  // 🕒 1) While auth is loading (prevents UI flicker)
+  if (loading) {
+    return (
+      <div className="w-full h-40 flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  // 🔒 2) No token → force login
   if (!token) {
     return (
       <Navigate
@@ -30,13 +40,13 @@ export default function RequireAuth({ children, allowedRoles }) {
         replace
         state={{
           from: location,
-          message: "You must be logged in to access this page.",
+          message: "Please log in to continue.",
         }}
       />
     );
   }
 
-  // 2️⃣ Token exists but no user → corrupted session / expired token
+  // ⚠ 3) Token exists but user missing → session expired or corrupted
   if (token && !user) {
     return (
       <Navigate
@@ -44,23 +54,25 @@ export default function RequireAuth({ children, allowedRoles }) {
         replace
         state={{
           from: location,
-          message: "Your session has expired. Please log in again.",
+          message: "Session expired. Please log in again.",
         }}
       />
     );
   }
 
-  // 3️⃣ Optional role-based protection → e.g. Admin routes
+  // 🛡 4) Optional Role-based Protection
   if (allowedRoles && !allowedRoles.includes(user?.role)) {
     return (
       <Navigate
         to="/"
         replace
-        state={{ message: "You don't have permission to access this page." }}
+        state={{
+          message: "You do not have permission to access this page.",
+        }}
       />
     );
   }
 
-  // 4️⃣ Finally, show the protected content
+  // 🎉 5) All Good → Render protected content
   return <>{children}</>;
 }

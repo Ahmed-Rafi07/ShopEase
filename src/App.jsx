@@ -13,7 +13,7 @@ import PageLoader from "./components/PageLoader";
 // Pages
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import SignUp from "./pages/SignUp";             // ⭐ Added
+import SignUp from "./pages/SignUp";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 import CartPage from "./pages/CartPage";
@@ -31,13 +31,12 @@ import OrderDetailPage from "./pages/OrderDetailPage";
 
 import AdminDashboard from "./pages/AdminDashboard";
 
-
 export default function App() {
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
 
-        {/* ⭐ PUBLIC ROUTES (with MainLayout) */}
+        {/* ⭐ PUBLIC ROUTES (Main Layout) */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Products />} />
@@ -46,13 +45,19 @@ export default function App() {
           <Route path="/cart" element={<CartPage />} />
         </Route>
 
-        {/* ⭐ AUTH ROUTES (NO HEADER, only for guests) */}
-        <Route element={<RequireGuest><AuthLayout /></RequireGuest>}>
+        {/* ⭐ AUTH PAGES (Login + Signup, no header) */}
+        <Route
+          element={
+            <RequireGuest>
+              <AuthLayout />
+            </RequireGuest>
+          }
+        >
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />     {/* ⭐ Signup route */}
+          <Route path="/signup" element={<SignUp />} />
         </Route>
 
-        {/* ⭐ PROTECTED USER ROUTES */}
+        {/* ⭐ USER PROTECTED ROUTES */}
         <Route element={<MainLayout />}>
           <Route
             path="/checkout/address"
@@ -127,18 +132,20 @@ export default function App() {
           />
         </Route>
 
-        {/* ⭐ ADMIN ROUTES */}
+        {/* ⭐ ADMIN PANEL ROUTES (Correct FIXED Version) */}
         <Route
-          path="/admin/*"
+          path="/admin"
           element={
             <RequireAdmin>
-              <MainLayout>
-                <AdminDashboard />
-              </MainLayout>
+              <MainLayout />
             </RequireAdmin>
           }
-        />
-
+        >
+          <Route index element={<AdminDashboard />} />
+          {/* If you add more admin pages later: */}
+          {/* <Route path="orders" element={<AdminOrders />} /> */}
+          {/* <Route path="products" element={<AdminProducts />} /> */}
+        </Route>
       </Routes>
     </Suspense>
   );

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { motion } from "framer-motion";
 
 export default function AddressPage() {
   const navigate = useNavigate();
@@ -15,17 +16,31 @@ export default function AddressPage() {
     pincode: "",
   });
 
+  const [errors, setErrors] = useState({});
+
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+
+    setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
+  };
+
+  const validateFields = () => {
+    const newErrors = {};
+    Object.keys(form).forEach((key) => {
+      if (!form[key].trim()) {
+        newErrors[key] = "This field is required";
+      }
+    });
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // true if no errors
   };
 
   const handleNext = () => {
-    for (let key in form) {
-      if (!form[key].trim()) {
-        alert("⚠️ Please fill all fields!");
-        return;
-      }
-    }
+    if (!validateFields()) return;
+
     navigate("/checkout/payment", { state: { address: form } });
   };
 
@@ -44,20 +59,29 @@ export default function AddressPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 pt-20 px-6 flex justify-center animate-fadeIn">
-      
-      {/* Container */}
-      <div className="backdrop-blur-xl bg-white/60 border border-white/40 shadow-2xl rounded-3xl p-10 w-full max-w-2xl animate-slideUp">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 pt-20 px-6 flex justify-center">
 
-        {/* Header */}
-        <h2 className="text-4xl font-extrabold text-center text-slate-900 drop-shadow-sm mb-10">
+      {/* Wrapper */}
+      <motion.div
+        initial={{ opacity: 0, y: 30, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="backdrop-blur-xl bg-white/60 border border-white/40 shadow-2xl rounded-3xl p-10 w-full max-w-2xl"
+      >
+
+        {/* Title */}
+        <motion.h2
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-4xl font-extrabold text-center text-slate-900 drop-shadow-sm mb-10"
+        >
           Delivery Address
-        </h2>
+        </motion.h2>
 
-        {/* Form */}
+        {/* FORM */}
         <div className="space-y-8">
-
-          {/* Floating Input */}
+          {/* Floating Inputs */}
           {[
             { name: "name", label: "Full Name" },
             { name: "phone", label: "Phone Number" },
@@ -68,17 +92,24 @@ export default function AddressPage() {
                 name={field.name}
                 value={form[field.name]}
                 onChange={handleChange}
-                className="peer w-full p-4 px-4 bg-white/80 border border-slate-300 rounded-xl 
-                focus:border-indigo-500 focus:ring-2 focus:ring-indigo-300 outline-none transition shadow-sm"
+                className={`peer w-full p-4 bg-white/80 border rounded-xl outline-none transition
+                  shadow-sm focus:ring-2 focus:ring-indigo-300 focus:border-indigo-500
+                  ${errors[field.name] ? "border-rose-500" : "border-slate-300"}
+                `}
               />
               <label
-                className="absolute top-1/2 left-4 -translate-y-1/2 
-                text-slate-500 pointer-events-none transition-all 
-                peer-focus:top-2 peer-focus:text-xs peer-focus:text-indigo-600
-                peer-valid:top-2 peer-valid:text-xs peer-valid:text-indigo-600"
+                className="
+                  absolute left-4 pointer-events-none text-slate-500 transition-all
+                  top-1/2 -translate-y-1/2 peer-focus:top-2 peer-focus:text-xs 
+                  peer-focus:text-indigo-600 peer-valid:top-2 peer-valid:text-xs 
+                  peer-valid:text-indigo-600
+                "
               >
                 {field.label}
               </label>
+              {errors[field.name] && (
+                <p className="text-rose-600 text-sm mt-1">{errors[field.name]}</p>
+              )}
             </div>
           ))}
 
@@ -89,17 +120,23 @@ export default function AddressPage() {
               rows="3"
               value={form.address}
               onChange={handleChange}
-              className="peer w-full p-4 bg-white/80 border border-slate-300 rounded-xl 
-              focus:border-indigo-500 focus:ring-2 focus:ring-indigo-300 
-              outline-none transition shadow-sm"
+              className={`peer w-full p-4 bg-white/80 border rounded-xl outline-none transition
+                shadow-sm focus:ring-2 focus:ring-indigo-300 focus:border-indigo-500
+                ${errors.address ? "border-rose-500" : "border-slate-300"}
+              `}
             ></textarea>
             <label
-              className="absolute top-5 left-4 text-slate-500 pointer-events-none transition-all
-              peer-focus:top-2 peer-focus:text-xs peer-focus:text-indigo-600
-              peer-valid:top-2 peer-valid:text-xs peer-valid:text-indigo-600"
+              className="
+                absolute left-4 top-5 text-slate-500 pointer-events-none transition-all
+                peer-focus:top-2 peer-focus:text-xs peer-focus:text-indigo-600
+                peer-valid:top-2 peer-valid:text-xs peer-valid:text-indigo-600
+              "
             >
               Full Address
             </label>
+            {errors.address && (
+              <p className="text-rose-600 text-sm mt-1">{errors.address}</p>
+            )}
           </div>
 
           {/* City + State */}
@@ -113,18 +150,23 @@ export default function AddressPage() {
                   name={field.name}
                   value={form[field.name]}
                   onChange={handleChange}
-                  className="peer w-full p-4 bg-white/80 border border-slate-300 rounded-xl 
-                  focus:border-indigo-500 focus:ring-2 focus:ring-indigo-300 
-                  outline-none transition shadow-sm"
+                  className={`peer w-full p-4 bg-white/80 border rounded-xl outline-none transition
+                    shadow-sm focus:ring-2 focus:ring-indigo-300 focus:border-indigo-500
+                    ${errors[field.name] ? "border-rose-500" : "border-slate-300"}
+                  `}
                 />
                 <label
-                  className="absolute top-1/2 left-4 -translate-y-1/2 text-slate-500 
-                  pointer-events-none transition-all
-                  peer-focus:top-2 peer-focus:text-xs peer-focus:text-indigo-600
-                  peer-valid:top-2 peer-valid:text-xs peer-valid:text-indigo-600"
+                  className="
+                    absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none transition-all
+                    peer-focus:top-2 peer-focus:text-xs peer-focus:text-indigo-600
+                    peer-valid:top-2 peer-valid:text-xs peer-valid:text-indigo-600
+                  "
                 >
                   {field.label}
                 </label>
+                {errors[field.name] && (
+                  <p className="text-rose-600 text-sm mt-1">{errors[field.name]}</p>
+                )}
               </div>
             ))}
           </div>
@@ -132,39 +174,29 @@ export default function AddressPage() {
 
         {/* Buttons */}
         <div className="mt-10 space-y-4">
-          <button
+          <motion.button
+            whileTap={{ scale: 0.97 }}
             onClick={handleNext}
-            className="w-full bg-indigo-600 text-white py-4 rounded-xl text-lg font-semibold 
-            shadow-lg hover:bg-indigo-700 active:scale-95 transition"
+            className="
+              w-full bg-indigo-600 text-white py-4 rounded-xl text-lg font-semibold
+              shadow-lg hover:bg-indigo-700 transition
+            "
           >
             Continue to Payment →
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
+            whileTap={{ scale: 0.97 }}
             onClick={() => navigate("/cart")}
-            className="w-full border border-slate-300 py-3 rounded-xl text-slate-700
-            hover:bg-slate-100 active:scale-95 transition"
+            className="
+              w-full border border-slate-300 py-3 rounded-xl text-slate-700
+              hover:bg-slate-100 transition
+            "
           >
             ← Back to Cart
-          </button>
+          </motion.button>
         </div>
-      </div>
-
-      {/* Animations */}
-      <style>{`
-        .animate-fadeIn { animation: fadeIn 0.6s ease-out; }
-        .animate-slideUp { animation: slideUp 0.7s ease-out; }
-
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0px); }
-        }
-      `}</style>
+      </motion.div>
     </div>
   );
 }

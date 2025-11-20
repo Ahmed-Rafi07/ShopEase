@@ -7,6 +7,7 @@ import { User, ChevronDown, Menu } from "lucide-react";
 export default function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const [openMenu, setOpenMenu] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -14,17 +15,18 @@ export default function Header() {
   const user = useSelector((state) => state.auth.user);
   const wishlist = useSelector((state) => state.wishlist.items) || [];
 
-  // Close dropdown if clicked outside
+  // Close dropdown when clicking outside
   useEffect(() => {
-    const handler = (e) => {
-      if (!dropdownRef.current?.contains(e.target)) {
+    function handleClick(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setOpenMenu(false);
       }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  // Logout
   const handleLogout = () => {
     dispatch(logout());
     localStorage.clear();
@@ -32,7 +34,7 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-slate-200 shadow-sm">
+    <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-slate-200 shadow-sm transition">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
 
         {/* LOGO */}
@@ -46,25 +48,16 @@ export default function Header() {
         {/* DESKTOP NAV */}
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
 
-          <Link
-            to="/products"
-            className="text-slate-700 hover:text-indigo-600 transition"
-          >
+          <Link to="/products" className="text-slate-700 hover:text-indigo-600 transition">
             Products
           </Link>
 
-          <Link
-            to="/cart"
-            className="text-slate-700 hover:text-indigo-600 transition"
-          >
+          <Link to="/cart" className="text-slate-700 hover:text-indigo-600 transition">
             Cart
           </Link>
 
           {/* Wishlist */}
-          <Link
-            to="/wishlist"
-            className="relative text-slate-700 hover:text-indigo-600 transition"
-          >
+          <Link to="/wishlist" className="relative text-slate-700 hover:text-indigo-600 transition">
             Wishlist
             {wishlist.length > 0 && (
               <span className="absolute -top-2 -right-3 bg-rose-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full shadow">
@@ -73,7 +66,7 @@ export default function Header() {
             )}
           </Link>
 
-          {/* ADMIN */}
+          {/* ADMIN LINK */}
           {(user?.role === "admin" || user?.role === "developer") && (
             <Link
               to="/admin"
@@ -87,23 +80,26 @@ export default function Header() {
           {user ? (
             <div className="relative" ref={dropdownRef}>
               <button
-                onClick={() => setOpenMenu(!openMenu)}
+                onClick={() => setOpenMenu((prev) => !prev)}
                 className="flex items-center gap-2 px-3 py-1.5 hover:bg-slate-100 rounded-lg transition"
               >
                 <User size={20} className="text-indigo-600" />
                 <span className="text-slate-700">Hi, {user.name}</span>
-                <ChevronDown size={18} className="text-slate-500" />
+                <ChevronDown
+                  size={18}
+                  className={`text-slate-500 transition-transform ${
+                    openMenu ? "rotate-180" : "rotate-0"
+                  }`}
+                />
               </button>
 
-              {/* ANIMATED DROPDOWN */}
+              {/* DROPDOWN */}
               <div
-                className={`absolute right-0 mt-2 w-52 bg-white shadow-xl border rounded-xl py-2 
-                  transition-all duration-200 origin-top-right
-                  ${
-                    openMenu
-                      ? "opacity-100 scale-100"
-                      : "opacity-0 scale-95 pointer-events-none"
-                  }`}
+                className={`absolute right-0 mt-2 w-56 bg-white shadow-xl border rounded-xl py-2 transition-all duration-200 origin-top-right ${
+                  openMenu
+                    ? "opacity-100 scale-100"
+                    : "opacity-0 scale-95 pointer-events-none"
+                }`}
               >
                 <Link
                   to="/profile"
@@ -112,6 +108,7 @@ export default function Header() {
                 >
                   My Account
                 </Link>
+
                 <Link
                   to="/profile/edit"
                   onClick={() => setOpenMenu(false)}
@@ -119,6 +116,7 @@ export default function Header() {
                 >
                   Edit Profile
                 </Link>
+
                 <Link
                   to="/profile/addresses"
                   onClick={() => setOpenMenu(false)}
@@ -126,6 +124,7 @@ export default function Header() {
                 >
                   Manage Address
                 </Link>
+
                 <Link
                   to="/orders"
                   onClick={() => setOpenMenu(false)}
@@ -154,7 +153,7 @@ export default function Header() {
 
         {/* MOBILE MENU BUTTON */}
         <button
-          className="md:hidden p-2 rounded-lg hover:bg-slate-100"
+          className="md:hidden p-2 rounded-lg hover:bg-slate-100 active:scale-95"
           onClick={() => setMobileOpen(true)}
         >
           <Menu size={22} />
@@ -164,18 +163,19 @@ export default function Header() {
       {/* MOBILE SIDE DRAWER */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 flex">
+          {/* Backdrop */}
           <div
             className="flex-1 bg-black/40"
             onClick={() => setMobileOpen(false)}
           />
 
-          <div className="w-72 bg-white shadow-xl px-5 py-6 animate-slide-left">
-            {/* Close */}
+          {/* Drawer */}
+          <div className="w-72 bg-white shadow-xl px-5 py-6 animate-slide-left relative">
             <button
               onClick={() => setMobileOpen(false)}
               className="mb-6 text-slate-500 hover:text-slate-700"
             >
-              Close ✖
+              ✖ Close
             </button>
 
             <div className="flex flex-col gap-4 text-slate-700">
@@ -183,6 +183,7 @@ export default function Header() {
               <Link to="/" onClick={() => setMobileOpen(false)}>Home</Link>
               <Link to="/products" onClick={() => setMobileOpen(false)}>Products</Link>
               <Link to="/cart" onClick={() => setMobileOpen(false)}>Cart</Link>
+
               <Link to="/wishlist" onClick={() => setMobileOpen(false)}>
                 Wishlist ({wishlist.length})
               </Link>
@@ -193,22 +194,17 @@ export default function Header() {
                 </Link>
               )}
 
-              <hr />
+              <hr className="my-2" />
 
               {user ? (
                 <>
-                  <Link
-                    to="/profile"
-                    onClick={() => setMobileOpen(false)}
-                  >
+                  <Link to="/profile" onClick={() => setMobileOpen(false)}>
                     My Account
                   </Link>
-                  <Link
-                    to="/orders"
-                    onClick={() => setMobileOpen(false)}
-                  >
+                  <Link to="/orders" onClick={() => setMobileOpen(false)}>
                     My Orders
                   </Link>
+
                   <button
                     onClick={handleLogout}
                     className="text-left text-rose-600"

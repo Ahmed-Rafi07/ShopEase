@@ -1,54 +1,103 @@
 // src/features/wishlist/wishlistSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
-const STORAGE_KEY = "shopease_wishlist_v1";
+const STORAGE_KEY = "SHOPEASE_WISHLIST";
 
-// helper to load
-const load = () => {
+/* -------------------------------------------------------------------
+   🔧 LOCAL STORAGE
+------------------------------------------------------------------- */
+const loadWishlist = () => {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
   } catch {
     return [];
   }
 };
 
-const initialState = {
-  items: load(), // array of product objects
+const saveWishlist = (items) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
 };
 
+/* -------------------------------------------------------------------
+   🔰 INITIAL STATE
+------------------------------------------------------------------- */
+const initialState = {
+  items: loadWishlist(),   // wishlist product list
+  total: loadWishlist().length,
+};
+
+/* -------------------------------------------------------------------
+   💎 WISHLIST SLICE (Premium)
+------------------------------------------------------------------- */
 const wishlistSlice = createSlice({
   name: "wishlist",
   initialState,
+
   reducers: {
+    /* -------------------------------------------------------
+       ➕ ADD
+    -------------------------------------------------------- */
     addToWishlist(state, action) {
-      const item = action.payload;
-      if (!state.items.find((i) => i.id === item.id)) {
-        state.items.push(item);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.items));
+      const product = action.payload;
+
+      // Avoid duplicates
+      const exists = state.items.some((i) => i.id === product.id);
+      if (!exists) {
+        state.items.push(product);
       }
+
+      state.total = state.items.length;
+      saveWishlist(state.items);
     },
+
+    /* -------------------------------------------------------
+       ❌ REMOVE
+    -------------------------------------------------------- */
     removeFromWishlist(state, action) {
       const id = action.payload;
+
       state.items = state.items.filter((i) => i.id !== id);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.items));
+      state.total = state.items.length;
+
+      saveWishlist(state.items);
     },
+
+    /* -------------------------------------------------------
+       🔄 TOGGLE
+    -------------------------------------------------------- */
     toggleWishlist(state, action) {
       const product = action.payload;
-      const exists = state.items.find((i) => i.id === product.id);
+      const exists = state.items.some((i) => i.id === product.id);
+
       if (exists) {
         state.items = state.items.filter((i) => i.id !== product.id);
       } else {
         state.items.push(product);
       }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.items));
+
+      state.total = state.items.length;
+      saveWishlist(state.items);
     },
+
+    /* -------------------------------------------------------
+       🧹 CLEAR
+    -------------------------------------------------------- */
     clearWishlist(state) {
       state.items = [];
+      state.total = 0;
       localStorage.removeItem(STORAGE_KEY);
     },
   },
 });
 
-export const { addToWishlist, removeFromWishlist, toggleWishlist, clearWishlist } = wishlistSlice.actions;
+/* -------------------------------------------------------------------
+   🔄 EXPORT ACTIONS + REDUCER
+------------------------------------------------------------------- */
+export const {
+  addToWishlist,
+  removeFromWishlist,
+  toggleWishlist,
+  clearWishlist,
+} = wishlistSlice.actions;
+
 export default wishlistSlice.reducer;

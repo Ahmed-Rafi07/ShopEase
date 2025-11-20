@@ -11,11 +11,11 @@ export default function Wishlist() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-14 px-6 animate-fadeIn">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 px-6 py-14 animate-fadeIn">
       <div className="max-w-6xl mx-auto">
 
         {/* HEADER */}
-        <div className="flex justify-between items-center mb-10">
+        <div className="flex justify-between items-center mb-12">
           <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
             <Heart className="text-rose-500" /> My Wishlist
           </h2>
@@ -31,7 +31,7 @@ export default function Wishlist() {
 
               <button
                 onClick={() => navigate("/products")}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-xl shadow-lg hover:bg-indigo-700 transition active:scale-95"
+                className="px-4 py-2 bg-indigo-600 text-white rounded-xl shadow-lg hover:bg-indigo-700 active:scale-95 transition"
               >
                 Continue Shopping
               </button>
@@ -69,14 +69,17 @@ export default function Wishlist() {
             {items.map((p) => (
               <div
                 key={p.id}
-                className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-lg border border-white/40 p-6 flex flex-col transition-all hover:-translate-y-2 hover:shadow-2xl"
+                className="
+                  bg-white/70 backdrop-blur-xl rounded-3xl shadow-lg border border-white/40 p-6 flex flex-col
+                  transition-all hover:-translate-y-2 hover:shadow-2xl hover:bg-white/80
+                "
               >
                 {/* IMAGE */}
                 <div className="w-full h-52 flex items-center justify-center bg-white/50 rounded-2xl overflow-hidden shadow-inner">
                   <img
                     src={p.image}
                     alt={p.title}
-                    className="max-h-full object-contain hover:scale-105 transition-transform duration-300"
+                    className="max-h-full object-contain transition-transform duration-300 hover:scale-105"
                   />
                 </div>
 

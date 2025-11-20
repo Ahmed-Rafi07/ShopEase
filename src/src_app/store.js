@@ -1,20 +1,19 @@
 // src/store.js OR src_app/store.js
 import { configureStore } from "@reduxjs/toolkit";
 
+// Reducers
 import authReducer from "../features/auth/authSlice";
 import cartReducer from "../features/cart/cartSlice";
 import wishlistReducer from "../features/wishlist/wishlistSlice";
+import userReducer from "../features/user/userSlice";   // ⭐ User slice added
 
-// ⭐ NEW — USER SLICE
-import userReducer from "../features/user/userSlice";
-
-export default configureStore({
+const store = configureStore({
   reducer: {
     auth: authReducer,
     cart: cartReducer,
     wishlist: wishlistReducer,
-
-    // ⭐ ADD THIS LINE
-    user: userReducer,
+    user: userReducer,            // ⭐ Required for EditProfile & Profile pages
   },
 });
+
+export default store;

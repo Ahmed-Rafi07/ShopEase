@@ -11,11 +11,14 @@ body,
 
 /* Base app theme */
 body {
-@apply bg-slate-50 text-slate-900 antialiased;
+  @apply bg-slate-50 text-slate-900 antialiased;
 }
 
-/* Optional custom scroll and animations */
+/* ---------------------------------------------------
+   GLOBAL UTILITIES + ANIMATIONS
+--------------------------------------------------- */
 @layer utilities {
+  /* Fade In */
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -30,65 +33,57 @@ body {
     animation: fadeIn 0.6s ease-in-out both;
   }
 
+  /* Smooth Card Hover */
   .card-hover {
     @apply transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg;
   }
 
+  /* Button Glow */
   .btn-glow:hover {
     box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
     transform: translateY(-1px);
   }
-}
-@keyframes bounce-slow {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
-}
 
-.animate-bounce-slow {
-  animation: bounce-slow 3s infinite ease-in-out;
-}
-@keyframes bounce-slow {
-  0%, 100% {
-    transform: translateY(0);
+  /* Slow Bounce */
+  @keyframes bounce-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
   }
-  50% {
-    transform: translateY(-8px);
+  .animate-bounce-slow {
+    animation: bounce-slow 3s infinite ease-in-out;
   }
-}
 
-.animate-bounce-slow {
-  animation: bounce-slow 3s infinite ease-in-out;
-}
-/* skeleton shimmer */
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-.animate-shimmer {
-  background: linear-gradient(90deg, #f3f3f3 25%, #ecebeb 37%, #f3f3f3 63%);
-  background-size: 400% 100%;
-  animation: shimmer 1.6s linear infinite;
-}
-.category-card:hover {
-  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.25);
-}
+  /* Skeleton shimmer */
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .animate-shimmer {
+    background: linear-gradient(90deg, #f3f3f3 25%, #ecebeb 37%, #f3f3f3 63%);
+    background-size: 400% 100%;
+    animation: shimmer 1.6s linear infinite;
+  }
 
-@layer utilities {
+  /* Category Card Hover Shadow */
+  .category-card:hover {
+    box-shadow: 0 8px 30px rgba(99, 102, 241, 0.25);
+  }
+
+  /* Scroll-in Card Animation */
   @keyframes cardIn {
     from { opacity: 0; transform: translateY(20px) scale(.98); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
   }
   .animate-cardIn {
     animation: cardIn 0.45s cubic-bezier(.2,.9,.3,1) both;
   }
 
-  /* subtle 3D perspective helper (you can tweak) */
-  .perspective { perspective: 800px; }
+  /* 3D perspective helper */
+  .perspective {
+    perspective: 800px;
+  }
 
+  /* Floating shadow animation */
   @keyframes floatShadow {
     0% { box-shadow: 0 6px 18px rgba(15,23,42,0.06); transform: translateY(0); }
     50% { box-shadow: 0 18px 40px rgba(15,23,42,0.08); transform: translateY(-4px); }
@@ -96,5 +91,14 @@ body {
   }
   .card-float {
     animation: floatShadow 6s ease-in-out infinite;
+  }
+
+  /* Slow rotation */
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(-360deg); }
+  }
+  .animate-spin-slow {
+    animation: spin-slow 2s linear infinite;
   }
 }

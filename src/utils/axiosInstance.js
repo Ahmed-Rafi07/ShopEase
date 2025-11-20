@@ -1,36 +1,62 @@
 // src/utils/axiosInstance.js
 import axios from "axios";
 
-// ⚠️ Update this to your backend base URL
+/* -------------------------------------------------------
+   🔥 PREMIUM AXIOS INSTANCE
+   - Auto token attach
+   - Auto logout on 401
+   - Handles JSON parse errors safely
+   - Works with Vite env + fallback URL
+------------------------------------------------------- */
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL?.trim() || "http://localhost:5000/api";
+
 const instance = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: API_BASE_URL,
+  timeout: 10000, // prevents hanging requests
 });
 
-// Attach token automatically on every request
+// -------------------------------------------------------
+// 🔒 Attach Bearer Token to every request
+// -------------------------------------------------------
 instance.interceptors.request.use((config) => {
   try {
-    const auth = JSON.parse(localStorage.getItem("AUTH_STATE"));
-    if (auth?.token) {
-      config.headers.Authorization = `Bearer ${auth.token}`;
+    const authString = localStorage.getItem("AUTH_STATE");
+    if (authString) {
+      const auth = JSON.parse(authString);
+      if (auth?.token) {
+        config.headers.Authorization = `Bearer ${auth.token}`;
+      }
     }
-  } catch (e) {
-    console.error("Failed to parse AUTH_STATE from localStorage");
+  } catch (err) {
+    console.warn("AUTH_STATE is corrupted in localStorage");
   }
+
   return config;
 });
 
-// Auto-logout on 401 (expired/invalid token)
+// -------------------------------------------------------
+// 🚫 Auto Logout if token expired (401)
+// -------------------------------------------------------
 instance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error?.response?.status === 401) {
+  (res) => res,
+  (err) => {
+    const status = err?.response?.status;
+
+    if (status === 401) {
       localStorage.removeItem("AUTH_STATE");
-      // Optional: you can use navigate in components; here we hard-redirect
-      if (window.location.pathname !== "/login") {
+
+      const isNotOnLogin =
+        !window.location.pathname.startsWith("/login") &&
+        !window.location.pathname.startsWith("/signup");
+
+      if (isNotOnLogin) {
         window.location.href = "/login?expired=true";
       }
     }
-    return Promise.reject(error);
+
+    return Promise.reject(err);
   }
 );
 
